@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import JsonResponse
+from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .batch import process_batch
@@ -91,8 +92,8 @@ def gallery_view(request):
 
 def shared_view(request, token):
     upload = get_object_or_404(ImageUpload, share_token=token, is_public=True)
-    upload.view_count += 1
-    upload.save()
+    ImageUpload.objects.filter(pk=upload.pk).update(view_count=F('view_count') + 1)
+    upload.refresh_from_db()
     return render(request, "processor/shared.html", {"upload": upload})
 
 
@@ -140,8 +141,10 @@ def preset_import_view(request):
                     config=config,
                 )
                 return redirect("preset_list")
-            except (json.JSONDecodeError, ValidationError) as e:
+            except json.JSONDecodeError as e:
                 form.add_error("json_data", str(e))
+            except ValidationError as e:
+                form.add_error("json_data", e.message)
     else:
         form = PresetImportForm()
     return render(request, "processor/preset_import.html", {"form": form})
