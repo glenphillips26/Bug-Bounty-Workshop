@@ -44,6 +44,8 @@ def login_view(request):
 
 
 def logout_view(request):
+    if request.method != "POST":
+        return redirect("upload")
     logout(request)
     return redirect("login")
 

@@ -64,7 +64,7 @@ def gallery_view(request):
         after_id = request.GET.get("after")
         per_page = 12
         if after_id:
-            uploads = uploads.filter(pk__lte=int(after_id)).order_by("-pk")[:per_page]
+            uploads = uploads.filter(pk__lt=int(after_id)).order_by("-pk")[:per_page]
         else:
             uploads = uploads.order_by("-pk")[:per_page]
 
