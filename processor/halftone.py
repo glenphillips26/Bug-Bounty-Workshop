@@ -31,8 +31,8 @@ def apply_halftone(input_path, output_path, dot_spacing=10, style="classic"):
                         count += 1
                 avg = total / count
 
-                intensity = avg / 255  # Normalize pixel intensity to 0-1 range
-                radius = max_radius * intensity
+                darkness = 1 - (avg / 255)  # Invert: dark pixels = large dots
+                radius = max_radius * darkness
 
                 if radius > 0.5:
                     center_x = x + dot_spacing // 2
@@ -100,7 +100,7 @@ def apply_halftone(input_path, output_path, dot_spacing=10, style="classic"):
                     cx_pos = x + dot_spacing // 2
                     cy_pos = y + dot_spacing // 2
                     draw.line(
-                        [(x, cy_pos), (x + dot_spacing, cy_pos)],
+                        [(cx_pos - line_width // 2, cy_pos), (cx_pos + line_width // 2, cy_pos)],
                         fill=(0, 0, 0),
                         width=line_width,
                     )

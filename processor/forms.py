@@ -1,15 +1,19 @@
 from django import forms
 
+from .models import Preset
+
 
 class UploadForm(forms.Form):
     image = forms.ImageField()
 
 
-class PresetForm(forms.Form):
-    name = forms.CharField(max_length=100)
+class PresetForm(forms.ModelForm):
     dot_spacing = forms.IntegerField(initial=10)
     style = forms.ChoiceField(choices=[("classic", "Classic"), ("diamond", "Diamond"), ("line", "Line")])
-    is_default = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Preset
+        fields = ["name", "is_default"]
 
 
 class PresetImportForm(forms.Form):
