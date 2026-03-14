@@ -117,7 +117,7 @@ def preset_create_view(request):
             try:
                 validate_preset_config(preset.config)
             except ValidationError as e:
-                form.add_error(None, e.message)
+                form.add_error(None, str(e))
                 return render(request, "processor/preset_create.html", {"form": form})
             preset.save()
             return redirect("preset_list")
@@ -144,7 +144,7 @@ def preset_import_view(request):
             except json.JSONDecodeError as e:
                 form.add_error("json_data", str(e))
             except ValidationError as e:
-                form.add_error("json_data", e.message)
+                form.add_error("json_data", str(e))
     else:
         form = PresetImportForm()
     return render(request, "processor/preset_import.html", {"form": form})
