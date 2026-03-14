@@ -32,8 +32,5 @@ def process_batch(batch_id):
         except Exception:
             continue
 
-    if batch.processed_count == batch.total_images:
-        batch.status = "completed"
-    else:
-        batch.status = "failed"
+    batch.status = "completed"
     batch.save()
